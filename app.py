@@ -56,6 +56,6 @@ def fetch_etfs(year, season):
 
 
 # Fetch ETF data for year 112, season 01
-ETFS = fetch_etfs('111', '03')
+ETFS = fetch_etfs('112', '01')
 
 ETFS
