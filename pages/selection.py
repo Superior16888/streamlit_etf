@@ -17,6 +17,8 @@ def fetch_etfs(year, season):
     ETFs['產業比率'] = ETFs['產業比率'].apply(lambda x: float(x[:-1]))/100
     return ETFs
 
+
+
 def get_unique_etfs():
     conn = sqlite3.connect('etf.sqlite')
     c = conn.cursor()
