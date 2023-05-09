@@ -27,18 +27,17 @@ def get_unique_etfs():
     return unique_etfs
 
 def show_etfs(etf_data):
-    st.write(etf_data)
+    st.write(etf_data.set_index('股票代號').drop(['年季', 'ETF名稱'], axis=1))
 
 unique_etfs = get_unique_etfs()
+last_year_season = unique_etfs.iloc[-1]['年季']
+unique_etfs = unique_etfs[unique_etfs['年季'] == last_year_season]
 
-# Sidebar to select year and season
-selected_year = st.sidebar.selectbox('Select year', unique_etfs['年季'].unique())
-selected_etf = st.sidebar.selectbox('Select ETF', unique_etfs.loc[unique_etfs['年季'] == selected_year, 'ETF名稱'].unique())
+# Sidebar to select ETF
+selected_etf = st.sidebar.selectbox('Select ETF', unique_etfs['ETF名稱'].values)
 
 # Fetch ETF data and show
-etf_data = fetch_etfs(selected_year[:3], selected_year[3:])
+etf_data = fetch_etfs(last_year_season[:3], last_year_season[3:])
 etf_data = etf_data[etf_data['ETF名稱'] == selected_etf]
 etf_data[['持股比率', '產業比率']] = etf_data[['持股比率', '產業比率']].applymap('{:.2%}'.format)
 show_etfs(etf_data)
-
-
