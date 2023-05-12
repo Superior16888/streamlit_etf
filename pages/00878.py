@@ -22,11 +22,11 @@ def fetch_etf_data(year, season, etf_name):
         return etf_data
     else:
         return None
-
+    
 def show_etf_data(etf_data):
     if etf_data is not None:
-        st.write(f"Dataframe format: {etf_data.dtypes.to_dict()}")
-        st.dataframe(etf_data.style.hide_index(), float_format='{:.2f}%'.format)
+        etf_data_formatted = etf_data.style.format({'持股比率': '{:.2%}', '產業比率': '{:.2%}'})
+        st.dataframe(etf_data_formatted.hide_index())
     else:
         st.write("No data found for the selected ETF.")
 
