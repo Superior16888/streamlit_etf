@@ -1,4 +1,7 @@
-requests
-beautifulsoup4
-pandas
-datetime
+streamlit==1.22.0
+pandas==1.4.4
+streamlit==1.22.0
+yahoo-fin==0.8.9.1
+sqlite3==3.8.3
+plotly==5.14.1
+beautifulsoup4==4.4.0
