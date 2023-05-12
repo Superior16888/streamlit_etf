@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 import pandas.io.formats.style
+import plotly.express as px
 
 def fetch_latest_year_season():
     conn = sqlite3.connect('etf.sqlite')
@@ -34,29 +35,32 @@ def show_etf_data(etf_data):
     else:
         st.write("No data found for the selected ETF.")
 
+      
+        
 # Fetch the latest year and season from the database
 selected_year, selected_season = fetch_latest_year_season()
 
-# Specify the ETF name
-selected_etf = '國泰台灣高股息傘型證券投資信託基金之台灣ESG永續高股息ETF證券投資信託基金'
+# Fetch the list of available ETFs
+conn = sqlite3.connect('etf.sqlite')
+c = conn.cursor()
+c.execute(f"SELECT DISTINCT ETF名稱 FROM etfs WHERE 年季='{selected_year+selected_season}'")
+available_etfs = c.fetchall()
+available_etfs = [row[0] for row in available_etfs]
+conn.close()
 
-# Fetch the ETF data for the latest year, season, and ETF name
+# Create a selectbox for choosing the ETF
+selected_etf = st.selectbox("Select ETF", available_etfs)
+
+# Fetch the ETF data for the latest year, season, and selected ETF
 etf_data = fetch_etf_data(selected_year, selected_season, selected_etf)
 
 
 
-
-
-import plotly.express as px
-import numpy as np
-df = etf_data
-fig = px.treemap(df, path=[px.Constant("ETF"), '產業類別', '股票名稱'], values='持股比率')
-# fig.update_layout(margin = dict(t=50, l=25, r=25, b=25))
-# fig.show()
-# fig.write_html(f'00878_Perform_{start_date}_{end_date}.html')
-st.plotly_chart(fig, use_container_width=False)
-
+# Create the treemap visualization if data is available
+if etf_data is not None:
+    fig = px.treemap(etf_data, path=[px.Constant("ETF"), '產業類別', '股票名稱'], values='持股比率')
+    st.plotly_chart(fig, use_container_width=True)
+    
+    
 # Show the ETF data
 show_etf_data(etf_data)
-
-
